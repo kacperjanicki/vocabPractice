@@ -1,20 +1,17 @@
-import React, { useState } from "react";
-import ReactCountryFlag from "react-country-flag"
-import { countries } from "./countries";
+import { useState } from "react";
 import LanguageSelect from "./LanguageSelect";
 
-
-
-
 const ChooseLang = () => {
-    const [nativeLanguage, setNativeLanguage] = useState("");
-    const [foreignLanguage, setForeignLanguage] = useState("")
-
-
-    const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setNativeLanguage(e.target.value)
-        console.log(nativeLanguage);
+    type Country = {
+        name: string;
+        code: string;
     }
+
+    const [nativeLanguage, setNativeLanguage] = useState<Country | null>(null);
+    const [foreignLanguage, setForeignLanguage] = useState<Country | null>(null);
+
+    // console.log("current setup: " + nativeLanguage);
+
 
     return (
         <div>
@@ -29,7 +26,6 @@ const ChooseLang = () => {
                 value={foreignLanguage}
                 onChange={setForeignLanguage}
             />
-
 
         </div>
 
