@@ -25,7 +25,7 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({ label, value, onChange 
                     }}
                     style={{ marginLeft: 8 }}
                 >
-                    <option value="">-- wybierz kraj --</option>
+                    <option value="">-- select country --</option>
                     {countries.map(country => (
                         <option key={country.name} value={country.code}>
                             {country.name}

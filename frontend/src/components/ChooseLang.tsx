@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LanguageSelect from "./LanguageSelect";
 
 const ChooseLang = () => {
@@ -10,8 +10,10 @@ const ChooseLang = () => {
     const [nativeLanguage, setNativeLanguage] = useState<Country | null>(null);
     const [foreignLanguage, setForeignLanguage] = useState<Country | null>(null);
 
-    // console.log("current setup: " + nativeLanguage);
-
+    console.log("current setup:" +
+        "\nnative: " + nativeLanguage?.name +
+        "\nforeign: " + foreignLanguage?.name
+    );
 
     return (
         <div>
@@ -26,7 +28,6 @@ const ChooseLang = () => {
                 value={foreignLanguage}
                 onChange={setForeignLanguage}
             />
-
         </div>
 
     )

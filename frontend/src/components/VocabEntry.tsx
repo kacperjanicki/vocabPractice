@@ -7,7 +7,16 @@ const VocabEntry = () => {
     const [word, setWord] = useState("");
 
     const submitWord = () => {
-        console.log(word);
+
+        // console.log(word);
+        fetch("http://localhost:5174/ai/test")
+            .then((response) => response.json())
+            .then((data) => console.log(data.message))
+            .catch((err) => console.error(err));
+        // fetch("http://localhost:5174/word/" + word + "?native=pl?foreign=es")
+        //     .then((response) => response.json())
+        //     .then((data) => console.log(data.message))
+        //     .catch((err) => console.error(err));
     }
 
     return (
