@@ -1,14 +1,33 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  color-scheme: light dark;
+
+:root {
+  font-family: 'Inter', 'Jetbrains Mono', Helvetica, Arial, sans-serif;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
+}
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+* {
+  /* border: 1px solid grey; */
+}
+
+.vocabEntry {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  height: 20px;
+}
+
+input {
+  height: 100%;
+}
+
+.btnIcon:hover path {
+  fill: #a1a1aa
+}
+
+:hover .btnIcon {
+  cursor: pointer;
 }
