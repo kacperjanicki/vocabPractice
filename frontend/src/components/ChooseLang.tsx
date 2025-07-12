@@ -16,7 +16,7 @@ const ChooseLang = () => {
     );
 
     return (
-        <div>
+        <div className="langSelectContainer">
             <LanguageSelect
                 label="Native Language"
                 value={nativeLanguage}

@@ -2,32 +2,225 @@
 @tailwind components;
 @tailwind utilities;
 
-
-:root {
+body {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
   font-family: 'Inter', 'Jetbrains Mono', Helvetica, Arial, sans-serif;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-* {
-  /* border: 1px solid grey; */
+.main-content {
+  max-width: 900px;
+  width: 80vw;
+  min-width: 320px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  background: #2c2c2c;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+
+.langSelect {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem 0;
+  background-color: #2c2c2c;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.langSelectContainer {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.langSelectContainer select {
+  min-width: 180px;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background-color: #3a3a3a;
+  color: rgba(255, 255, 255, 0.87);
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.langSelectContainer select:focus {
+  outline: none;
+  border-color: #63B0CD;
+  box-shadow: 0 0 5px #63B0CD;
 }
 
 .vocabEntry {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.vocabInputRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   gap: 1rem;
-  height: 20px;
+  width: 100%;
+  max-width: 420px;
 }
 
-input {
-  height: 100%;
+.wordInput {
+  width: 100%;
+  max-width: 400px;
+  height: 25px;
+  padding: 0 1rem;
+  border-radius: 1rem;
+  background-color: #27272a;
+  color: #f4f4f5;
+  border: 1px solid #3f3f46;
+  font-family: 'JetBrains Mono', 'Inter', monospace;
+  font-size: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  line-height: 25px;
+  box-sizing: border-box;
 }
 
-.btnIcon:hover path {
-  fill: #a1a1aa
-}
-
-:hover .btnIcon {
+.btnIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: transparent;
+  transition: background 0.2s;
   cursor: pointer;
+}
+
+.btnIcon svg {
+  color: #fff;
+  transition: color 0.2s;
+}
+
+.btnIcon:hover {
+  background: #63B0CD;
+}
+
+.btnIcon:hover svg {
+  color: #fff;
+}
+
+
+.wordInput {
+  width: 100%;
+  max-width: 400px;
+  height: 25px;
+  padding: 0 1rem;
+  border-radius: 1rem;
+  background-color: #27272a;
+  color: #f4f4f5;
+  border: 1px solid #3f3f46;
+  font-family: 'JetBrains Mono', 'Inter', monospace;
+  font-size: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  line-height: 25px;
+  box-sizing: border-box;
+}
+
+
+.wordInput::placeholder {
+  color: #71717a;
+  opacity: 1;
+}
+
+.wordInput:focus {
+  border-color: #63B0CD;
+  box-shadow: 0 0 0 2px #63B0CD33;
+}
+
+
+.btnIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* biała ramka */
+  border-radius: 8px;
+  /* lekko zaokrąglone rogi */
+  background: transparent;
+  /* domyślnie przezroczyste */
+  transition: background 0.2s;
+  cursor: pointer;
+}
+
+.btnIcon svg {
+  color: #fff;
+  /* biały plus */
+  transition: color 0.2s;
+}
+
+.btnIcon:hover {
+  background: #63B0CD;
+  /* niebieskie wnętrze */
+}
+
+.btnIcon:hover svg {
+  color: #fff;
+  /* plus pozostaje biały */
+}
+
+.vocabEntry {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.vocabResultBox {
+  margin-top: 1.5rem;
+  background: #232324;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.13);
+  padding: 1.5rem 2rem;
+  width: 100%;
+  max-width: 50%;
+  color: #f4f4f5;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.vocabResultRow {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.vocabLabel {
+  min-width: 110px;
+  color: #63B0CD;
+  font-weight: 500;
+}
+
+.vocabValue {
+  flex: 1;
+}
+
+.vocabExamples {
+  margin: 0;
+  padding-left: 1.2em;
+  color: #dad0c2;
 }

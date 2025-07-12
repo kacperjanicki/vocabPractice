@@ -53,14 +53,28 @@ const App: React.FC = () => {
   // printPerson = () => { console.log("a") };
 
   return (
-    <>
-      <TbVocabulary size="70px" />
-      <h1> VocabPractice</h1>
+    <div className='main-content'>
+      <div style={{ 'display': 'flex', justifyContent: 'center', gap: '1rem' }}>
+        <TbVocabulary size="70px" />
+        <h1> VocabPractice</h1>
+      </div>
+
+      <div className='description'>
+        <p>Generating quotes, synonyms and meanings for your words is done with self-hosted AI model</p>
+        <p>I made this tool to help me learn English vocabulary better, here in one place you have everything: meaning, synonyms, sentence examples and pronunciation.</p>
+
+        <p>After adding a word, to have all data visible, you might have to wait up to 15 seconds</p>
+        <p>While you're waiting, simple meaning and translation will be given to you, thanks to <a href="https://dictionaryapi.dev/" style={{ color: '#63B0CD' }} target="_blank"
+          rel="noopener noreferrer">dictionaryapi.dev</a></p>
+      </div>
+
+
+
 
       <ChooseLang />
 
       <VocabEntry />
-    </>
+    </div>
   )
 }
 

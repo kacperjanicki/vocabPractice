@@ -1,5 +1,5 @@
-import { countries } from "./countries";
 import ReactCountryFlag from "react-country-flag";
+import { countries } from "./countries";
 
 type Country = {
     name: string;
@@ -14,7 +14,7 @@ type LanguageSelectProps = {
 
 const LanguageSelect: React.FC<LanguageSelectProps> = ({ label, value, onChange }) => {
     return (
-        <div style={{ marginBottom: "1em" }}>
+        <div style={{ 'display': 'flex', 'flexDirection': 'column', 'gap': '1rem' }}>
             <label>
                 {label}
                 <select
@@ -34,7 +34,7 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({ label, value, onChange 
                 </select>
             </label>
             {value && (
-                <span style={{ marginLeft: 10 }}>
+                <span style={{ 'display': 'flex', 'justifyContent': 'center' }}>
                     <ReactCountryFlag
                         countryCode={value.code}
                         svg
