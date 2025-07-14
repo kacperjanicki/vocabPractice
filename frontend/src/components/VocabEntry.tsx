@@ -3,56 +3,67 @@ import '../index.css'
 import { TiPlus } from "react-icons/ti";
 
 type VocabResult = {
-    meaning: string;
-    type: string;
     translation: string;
-    synonyms: string[];
+    meaning: string;
     examples: string[];
+    synonyms: string[];
+    type: string;
 };
 
 const DUMMY_RESULT: VocabResult = {
-    translation: "komputer",
-    meaning: "Urządzenie elektroniczne do przetwarzania danych.",
-    type: "rzeczownik",
-    synonyms: ["pecet", "laptop", "maszyna licząca"],
+    translation: "-",
+    meaning: "-",
+    type: "-",
+    synonyms: ["-", "-", "-"],
     examples: [
-        "Mój komputer jest bardzo szybki.",
-        "Kupuję nowy komputer do pracy.",
-        "Komputer ułatwia naukę języków."
+        "-",
+        "-",
+        "-"
     ]
 };
 
 const VocabEntry = () => {
-
     const [word, setWord] = useState("");
-    const [result, setResult] = useState<VocabResult | null>(null);
+    const [result, setResult] = useState<VocabResult | null>();
+    const [loading, setLoading] = useState(false);
 
     const submitWord = () => {
+        setLoading(true)
+        setResult(DUMMY_RESULT)
         /*
-            dictionaryapi.dev is responsible for fetching phonetics and other stuff that ai generates
-            so we can serve it to the user while ai generating the reponse
+            libretranslate is responsible for fetching simple translation and phonetics,
+            so we can serve it to the user while ai is generating the full response
 
-            i decided  to use both dictionaryapi.dev and ai, because there's no public api
+            i decided  to use both libretranslate and ai, because there's no public api
             that meets my requirements for this project
         */
 
-        // fetch("https://api.dictionaryapi.dev/api/v2/entries/en/" + word)
-        //     .then((response) => response.json())
-        //     .then((data) => {
-        //         console.log(data)
-        //     })
-        //     .catch((err) => console.error(err));
-
+        // const res = await fetch("http://localhost:5000/translate", {
+        //     method: "POST",
+        //     body: JSON.stringify({
+        //         q: word,
+        //         source: "en",
+        //         target: "pl",
+        //         format: "text",
+        //         alternatives: 3,
+        //         api_key: ""
+        //     }),
+        //     headers: { "Content-Type": "application/json" }
+        // });
+        // console.log(await res.json());
 
         fetch("http://localhost:5174/word/" + word)
             .then((response) => response.json())
             .then((data) => {
                 console.log(data)
                 setResult(data)
+                setLoading(false)
             })
-            .catch((err) => console.error(err));
+            .catch((err) => {
+                console.error(err)
+                setLoading(true)
+            });
 
-        // setResult(DUMMY_RESULT)
 
         // fetch("http://localhost:5174/word/" + word + "?native=pl?foreign=es")
         //     .then((response) => response.json())
@@ -76,35 +87,54 @@ const VocabEntry = () => {
                     <div className="btnIcon" onClick={submitWord}>
                         <TiPlus size="25px" />
                     </div>
+                    {/* {loading && (
+                        <div className="loader"></div>
+                    )} */}
+
                 </div>
                 {result && (
                     <div className="vocabResultBox">
                         <div className="vocabResultRow">
                             <span className="vocabLabel">Translation:</span>
-                            <span className="vocabValue">{result.translation}</span>
+                            <span className={`vocabValue${loading ? " loading-blur" : ""}`}>
+                                {loading ? "Loading..." : result?.translation ?? "-"}
+                            </span>
                         </div>
                         <div className="vocabResultRow">
                             <span className="vocabLabel">Meaning:</span>
-                            <span className="vocabValue">{result.meaning}</span>
+                            <span className={`vocabValue${loading ? " loading-blur" : ""}`}>
+                                {loading ? "Loading meaning..." : result?.meaning ?? "-"}
+                            </span>
                         </div>
                         <div className="vocabResultRow">
                             <span className="vocabLabel">Type:</span>
-                            <span className="vocabValue">{result.type}</span>
+                            <span className={`vocabValue${loading ? " loading-blur" : ""}`}>
+                                {loading ? "Loading..." : result?.type ?? "-"}
+                            </span>
                         </div>
                         <div className="vocabResultRow">
                             <span className="vocabLabel">Synonyms:</span>
-                            <span className="vocabValue">{result.synonyms.join(', ')}</span>
+                            <span className={`vocabValue${loading ? " loading-blur" : ""}`}>
+                                {loading ? "Loading, loading, loading" : result?.synonyms?.join(', ') ?? "-"}
+                            </span>
                         </div>
                         <div className="vocabResultRow">
                             <span className="vocabLabel">Examples:</span>
                             <ul className="vocabExamples">
-                                {result.examples.map((ex, idx) => (
-                                    <li key={idx}>{ex}</li>
+                                {(loading
+                                    ? ["Loading example...", "Loading example...", "Loading example..."]
+                                    : result?.examples ?? ["-", "-", "-"]
+                                ).map((ex, idx) => (
+                                    <li key={idx}>
+                                        <span className={loading ? "loading-blur" : ""}>{ex}</span>
+                                    </li>
                                 ))}
                             </ul>
                         </div>
                     </div>
                 )}
+
+
             </div>
         </>
 
