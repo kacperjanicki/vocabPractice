@@ -1,19 +1,34 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import LanguageSelect from "./LanguageSelect";
+import type { Country } from "../types/Country";
+import { languages } from "./languages";
 
-const ChooseLang = () => {
-    type Country = {
-        name: string;
-        code: string;
-    }
+type ChooseLangProps = {
+    nativeLanguage: Country | null;
+    setNativeLanguage: (lang: Country | null) => void;
+    foreignLanguage: Country | null;
+    setForeignLanguage: (lang: Country | null) => void;
+};
 
-    const [nativeLanguage, setNativeLanguage] = useState<Country | null>(null);
-    const [foreignLanguage, setForeignLanguage] = useState<Country | null>(null);
+const ChooseLang = ({
+    nativeLanguage,
+    setNativeLanguage,
+    foreignLanguage,
+    setForeignLanguage
+}: ChooseLangProps) => {
 
-    console.log("current setup:" +
-        "\nnative: " + nativeLanguage?.name +
-        "\nforeign: " + foreignLanguage?.name
-    );
+
+    const defaultNative = languages.find(lang => lang.code === "pl");
+    const defaultForeign = languages.find(lang => lang.code === "en");
+
+    useEffect(() => {
+        if (!nativeLanguage && defaultNative) {
+            setNativeLanguage(defaultNative);
+        }
+        if (!foreignLanguage && defaultForeign) {
+            setForeignLanguage(defaultForeign);
+        }
+    }, []);
 
     return (
         <div className="langSelectContainer">

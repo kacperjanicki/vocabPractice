@@ -1,10 +1,6 @@
 import ReactCountryFlag from "react-country-flag";
-import { countries } from "./countries";
-
-type Country = {
-    name: string;
-    code: string;
-}
+import { languages } from "./languages";
+import type { Country } from "../types/Country";
 
 type LanguageSelectProps = {
     label: string;
@@ -19,16 +15,16 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({ label, value, onChange 
                 {label}
                 <select
                     value={value?.code || ""}
+                    className="language-select"
                     onChange={e => {
-                        const selected = countries.find(c => c.code == e.target.value);
+                        const selected = languages.find(lg => lg.code == e.target.value);
                         if (selected) onChange(selected);
                     }}
-                    style={{ marginLeft: 8 }}
                 >
-                    <option value="">-- select country --</option>
-                    {countries.map(country => (
-                        <option key={country.name} value={country.code}>
-                            {country.name}
+                    <option className="option-placeholder" value="">-- select language --</option>
+                    {languages.map(lg => (
+                        <option key={lg.name} value={lg.code}>
+                            {lg.name}
                         </option>
                     ))}
                 </select>
@@ -36,7 +32,7 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({ label, value, onChange 
             {value && (
                 <span style={{ 'display': 'flex', 'justifyContent': 'center' }}>
                     <ReactCountryFlag
-                        countryCode={value.code}
+                        countryCode={value.country}
                         svg
                         style={{ width: "2em", height: "2em" }}
                     />

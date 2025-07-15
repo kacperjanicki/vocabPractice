@@ -1,16 +1,26 @@
-from fastapi import FastAPI
+from fastapi import FastAPI,HTTPException
+from sqlalchemy import create_engine, text
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from Book import Book
 import httpx
 import json
-import re 
+import re
+import os
+
 """ PORTS:
     - 5173 - FRONTEND
     - 5174 - BACKEND
     - 5000 - LibreTranslate
     - 11434 - OLLAMA
 """
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+DB_USER = os.getenv("POSTGRES_USER")
+DB_PASSWORD = os.getenv("POSTGRES_PASSWORD")
+
 app = FastAPI()
+db = create_engine(DATABASE_URL)
 
 app.add_middleware(
     CORSMiddleware,
@@ -21,17 +31,24 @@ app.add_middleware(
 )
 
 INIT_PROMPT = (
-    "You are a translator/dictionary. You'll recieve JSON, e.g.: {'word':'xyz', 'native':'pl', 'foreign':'en'} (ISO codes). "
-    "Translate the word from the 'native' language to the 'foreign' language. Return the respnse in the 'native' language in the following JSON format:"
-    "{"
-    "translation: 'translation into foreign',"
-    "meaning: 'short and simple explanation of the word in the native language',"
-    "type: 'noun/verb/adjective',"
-    "synonyms: ['synonym1', 'synonym2', 'synonym3'],"
-    "examples: ['example sentence 1', 'example sentence 2', 'example sentence 3']"
-    "}"
-    "Your response should be only this JSON, nothing else."
+    "As a JSON translation API, return exactly this structure:\n"
+    "{\n"
+    "  \"translation\": \"accurate_translation\",\n"
+    "  \"meaning\": \"clear_definition_in_native_language\",\n"
+    "  \"type\": \"part_of_speech_in_native_terms\",\n"
+    "  \"synonyms\": [\"syn1\", \"syn2\"],\n"
+    "  \"examples\": [\"ex1\", \"ex2\", \"ex3\"]\n"
+    "}\n"
+    "Rules:\n"
+    "- Always return ALL fields\n"
+    "- Exactly 3 examples\n"
+    "- 2-4 synonyms\n"
+    "- Meaning/type/synonyms in {native}\n"
+    "- Translation/examples in {foreign}\n"
+    "Example for pl->es:\n"
+    "{\"translation\":\"gato\",\"meaning\":\"Ssak domowy\",\"type\":\"rzeczownik\",\"synonyms\":[\"kotek\",\"mruczek\"],\"examples\":[\"El gato ma\",\"Los gatos son\",\"Mi gato es\"]}"
 )
+
 
 """
         LibreTranslate - port 5000
@@ -39,6 +56,7 @@ INIT_PROMPT = (
         use - https://github.com/LibreTranslate/LibreTranslate
 """
 
+# Word--------------------------------------------------------------------------------------------------------
 def extract_first_json(text):
     match = re.search(r'\{.*\}', text, re.DOTALL)
     if match:
@@ -52,31 +70,102 @@ def extract_first_json(text):
             raise
     raise ValueError("No JSON found in response")
 
-
 @app.get("/word/{word}")
-async def read_word(word: str):
+async def read_word(
+    word: str,
+    native: str = None,
+    foreign: str = None
+    ):
+
     print("request recieved")
+    print("native:", native)
+    print("foreign:", foreign)
+
     final_prompt = (
     f"{INIT_PROMPT}\n"
-    f"{{'word': '{word}', 'native': 'en', 'foreign': 'es'}}")
-    
+    f"{{'word': '{word}', 'native': '{native}', 'foreign': '{foreign}'}}")
     # print(final_prompt)
 
-    async with httpx.AsyncClient(timeout=120.0) as client:
-        response = await client.post(
-            url="http://ollama:11434/api/generate",
-            json={
-                "model": "llama3",
-                "prompt": final_prompt,
-                "stream": False
-            }
+
+
+    try:
+        async with httpx.AsyncClient(timeout=120.0) as client:
+            response = await client.post(
+                url="http://ollama:11434/api/generate",
+                json={
+                    "model": "llama3",
+                    "prompt": final_prompt,
+                    "stream": False,
+                    "options": {
+                            "temperature": 0.3,
+                            "num_ctx": 2048,
+                            "num_thread": 4 
+                        }
+                }
+            )
+            # response_data - informacje o modelu, duration etc.
+            response_data = response.json()
+            print("RAW response_data:", response_data)
+            # response_dict - we extract only what we want to serve to the frontend
+            response_dict = extract_first_json(response_data.get('response',''))
+            print("RAW response_data['response']:", response_data.get('response'))
+            return JSONResponse(content=response_dict)
+
+    except httpx.ReadTimeout:
+        raise HTTPException(
+            status_code=504,
+            detail="Ollama response timeout. Try a simpler word or try again later.")
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Translation error: {str(e)}")
+
+# Book--------------------------------------------------------------------------------------------------------
+@app.post("/book/newBook")
+async def add_book(
+    title: str
+    ):
+
+    b1 = Book(title=title)
+
+    metadata = await b1.getMetadata()
+
+    json_formatted= json.dumps(b1.metadata, indent=2)
+    print(json_formatted)
+
+    return metadata
+
+@app.get("/book/{bookId}/cover")
+async def get_cover(bookId:str):
+    no_rules_cover_i = "10524294"
+    cover_i = no_rules_cover_i
+
+    print(DATABASE_URL)
+    print(DB_USER)
+    print(DB_PASSWORD)
+
+    # async with httpx.AsyncClient(timeout=120.0) as client:
+    #             response = await client.get(
+    #                 url="https://covers.openlibrary.org/b/id/{cover_i}.jpg"
+    #             )
+
+    #             print(response)
+    #             return(response)
+# User--------------------------------------------------------------------------------------------------------
+# @app.get("/util/listOfISOcodes")
+
+@app.post("/user/new")
+async def add_user(
+    # name:str,
+    # native:str,
+    # foreign:str
+    ):
+    with db.connect() as conn:
+        result = conn.execute(
+            text("select * from users;")
         )
-        # response_data - informacje o modelu, duration etc.
-        response_data = response.json()
-        print("RAW response_data:", response_data)
-        # response_dict - we extract only what we want to serve to the frontend
-        response_dict = extract_first_json(response_data.get('response',''))
-        print("RAW response_data['response']:", response_data.get('response'))
+        for row in result:
+            print(row)
 
 
-        return JSONResponse(content=response_dict)
+    return {"status":"ok"}

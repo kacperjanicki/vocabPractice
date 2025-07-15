@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import '../index.css'
 import { TiPlus } from "react-icons/ti";
+import type { Country } from '../types/Country';
 
 type VocabResult = {
     translation: string;
@@ -22,7 +23,13 @@ const DUMMY_RESULT: VocabResult = {
     ]
 };
 
-const VocabEntry = () => {
+type VocabEntryProps = {
+    nativeLanguage: Country | null;
+    foreignLanguage: Country | null;
+};
+
+
+const VocabEntry = ({ nativeLanguage, foreignLanguage }: VocabEntryProps) => {
     const [word, setWord] = useState("");
     const [result, setResult] = useState<VocabResult | null>();
     const [loading, setLoading] = useState(false);
@@ -30,6 +37,13 @@ const VocabEntry = () => {
     const submitWord = () => {
         setLoading(true)
         setResult(DUMMY_RESULT)
+
+        console.log("native: " + nativeLanguage?.code +
+            "\nforeign: " + foreignLanguage?.code
+        );
+
+
+
         /*
             libretranslate is responsible for fetching simple translation and phonetics,
             so we can serve it to the user while ai is generating the full response
@@ -52,7 +66,10 @@ const VocabEntry = () => {
         // });
         // console.log(await res.json());
 
-        fetch("http://localhost:5174/word/" + word)
+        fetch(
+            "http://localhost:5174/word/" + word
+            + "?native=" + nativeLanguage?.code + "&foreign=" + foreignLanguage?.code
+        )
             .then((response) => response.json())
             .then((data) => {
                 console.log(data)

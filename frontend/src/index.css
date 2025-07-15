@@ -4,6 +4,7 @@
 
 body {
   min-height: 100vh;
+  height: 100vh;
   margin: 0;
   padding: 0;
   font-family: 'Inter', 'Jetbrains Mono', Helvetica, Arial, sans-serif;
@@ -18,14 +19,37 @@ body {
   max-width: 900px;
   width: 80vw;
   min-width: 320px;
-  padding: 2rem;
+  min-height: 100vh;
+  /* Dodaj to */
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  justify-content: center;
+  /* Wyśrodkuj pionowo */
+  align-items: center;
+  /* Wyśrodkuj poziomo */
+  gap: 1.2rem;
+  /* Zmniejsz odstęp */
   background: #2c2c2c;
   border-radius: 16px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  padding: 0 2rem;
+  /* Usuń górny padding, zostaw tylko boczny */
 }
+
+.header-bar {
+  width: 100%;
+  margin-bottom: 1rem;
+  /* mniejszy odstęp pod nagłówkiem */
+}
+
+.description {
+  margin-top: 0;
+  /* usuń górny margines */
+  margin-bottom: 1.5rem;
+  width: 100%;
+  max-width: 700px;
+}
+
 
 
 .langSelect {
@@ -279,6 +303,11 @@ body {
   /* większy odstęp między li */
 }
 
+.vocabExamples li .loading-blur {
+  min-height: 1.5em;
+  display: inline-block;
+}
+
 
 .loading-blur {
   color: transparent;
@@ -315,4 +344,34 @@ body {
 .vocabExamples li {
   list-style-type: disc;
   margin-left: 18px;
+}
+
+.language-select {
+  background-color: #27272a;
+  color: #f4f4f5;
+  border: 1px solid #3f3f46;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-family: 'JetBrains Mono', 'Inter', monospace;
+  font-size: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  margin-left: 8px;
+}
+
+.language-select:focus {
+  border-color: #63B0CD;
+  box-shadow: 0 0 0 2px #63B0CD33;
+}
+
+.language-select option {
+  background: #232324;
+  color: #f4f4f5;
+}
+
+.option-placeholder {
+  color: #63B0CD;
+  font-style: italic;
+  background: #232324;
 }
