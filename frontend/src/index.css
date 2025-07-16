@@ -16,31 +16,84 @@ body {
 }
 
 .main-content {
+  /* Give 10vh (10% of viewport height) margin top and bottom */
+  margin: 10vh auto;
+  /* vertical margin 10vh; horizontal auto centers */
+
   max-width: 900px;
   width: 80vw;
   min-width: 320px;
-  min-height: 100vh;
-  /* Dodaj to */
+
+  /* Set height so content + margins fill viewport height */
+  height: calc(100vh - 20vh);
+  /* 100vh - top margin(10vh) - bottom margin(10vh) */
+
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  /* Wyśrodkuj pionowo */
   align-items: center;
-  /* Wyśrodkuj poziomo */
   gap: 1.2rem;
-  /* Zmniejsz odstęp */
+
   background: #2c2c2c;
   border-radius: 16px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-  padding: 0 2rem;
-  /* Usuń górny padding, zostaw tylko boczny */
+  padding: 3rem 2rem 2rem;
+  box-sizing: border-box;
 }
 
 .header-bar {
-  width: 100%;
-  margin-bottom: 1rem;
-  /* mniejszy odstęp pod nagłówkiem */
+  width: 100vw;
+  /* Make navbar full width */
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 90px;
+  /* Match icon size + spacing */
+  background-color: #1e1e1e;
+  padding: 0 2rem;
+  /* Left/Right only, no extra top/bottom */
+  z-index: 1000;
+  border-bottom: 1px solid #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
 }
+
+.header-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  /* Less gap for compactness */
+  height: 100%;
+}
+
+.header-label {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #fff;
+  line-height: 1;
+  margin-left: 0.5rem;
+  /* Subtle separation from icon */
+}
+
+
+.header-item.clickable {
+  position: relative;
+  cursor: pointer;
+  /* Remove strong box-shadow to keep icons visible */
+  transition: background 0.3s;
+}
+
+.header-item.clickable:hover .header-label,
+.header-item.clickable:hover svg {
+  color: #63B0CD;
+  filter: brightness(1.2);
+  /* slightly brighter */
+  transition: color 0.2s, filter 0.2s;
+}
+
+
+
 
 .description {
   margin-top: 0;
