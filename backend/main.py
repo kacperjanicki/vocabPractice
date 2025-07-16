@@ -1,12 +1,13 @@
 from fastapi import FastAPI,HTTPException
-from sqlalchemy import create_engine, text
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from Book import Book
+from schemas.Book import Book
+from schemas.User import User
+from schemas.DBconnection import DBconnection
+
 import httpx
 import json
 import re
-import os
 
 """ PORTS:
     - 5173 - FRONTEND
@@ -15,12 +16,12 @@ import os
     - 11434 - OLLAMA
 """
 
-DATABASE_URL = os.getenv("DATABASE_URL")
-DB_USER = os.getenv("POSTGRES_USER")
-DB_PASSWORD = os.getenv("POSTGRES_PASSWORD")
+# DATABASE_URL = os.getenv("DATABASE_URL")
+# DB_USER = os.getenv("POSTGRES_USER")
+# DB_PASSWORD = os.getenv("POSTGRES_PASSWORD")
 
 app = FastAPI()
-db = create_engine(DATABASE_URL)
+# db = create_engine(DATABASE_URL)
 
 app.add_middleware(
     CORSMiddleware,
@@ -132,17 +133,12 @@ async def add_book(
 
     json_formatted= json.dumps(b1.metadata, indent=2)
     print(json_formatted)
-
     return metadata
 
 @app.get("/book/{bookId}/cover")
 async def get_cover(bookId:str):
     no_rules_cover_i = "10524294"
     cover_i = no_rules_cover_i
-
-    print(DATABASE_URL)
-    print(DB_USER)
-    print(DB_PASSWORD)
 
     # async with httpx.AsyncClient(timeout=120.0) as client:
     #             response = await client.get(
@@ -153,19 +149,21 @@ async def get_cover(bookId:str):
     #             return(response)
 # User--------------------------------------------------------------------------------------------------------
 # @app.get("/util/listOfISOcodes")
+@app.get("/user/")
+def get_users():
+    return DBconnection.getUsers()
 
+@app.get("/user/{userName}")
+def get_specific_user(userName: str):
+    return DBconnection.getUser(userName)
+    
+# user moze dac name 'new' : handle
 @app.post("/user/new")
-async def add_user(
-    # name:str,
-    # native:str,
-    # foreign:str
+def add_user(
+        name:str,
+        native:str,
+        foreign:str
     ):
-    with db.connect() as conn:
-        result = conn.execute(
-            text("select * from users;")
-        )
-        for row in result:
-            print(row)
 
-
+    DBconnection.insertUser(User(name=name,native=native,foreign=foreign))
     return {"status":"ok"}

@@ -1,21 +1,23 @@
 import httpx
 from fastapi.responses import JSONResponse
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy import Integer, String
 
-class Book:
-    def __init__(self, name:str, native: str, foreign: str):
-        self.name = name
-        self.native = native
-        self.foreign = foreign
+class Base(DeclarativeBase):
+    pass
 
-    
-    def toString(self) -> str:
-        return self.title
 
-    def setCover(self, cover: bytes):
-        self.cover = cover
-    
-    def setMetadata(self, metadata: list[dict]):
-        self.metadata = metadata
+class User(Base):
+    __tablename__ = "users"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String(30), nullable=False)
+    native: Mapped[str] = mapped_column("native_iso_code",String(3), nullable=False)
+    foreign: Mapped[str] = mapped_column("foreign_iso_code",String(3), nullable=False)
+
+    def __repr__(self):
+        return f"Name: {self.name}, Native: {self.native}, Foreign: {self.foreign}"
+
 
     # async def getMetadata(self) -> JSONResponse:
     #     url = f"https://openlibrary.org/search.json?q={self.title}&fields=key,title,cover_i,author_name,editions,editions.key,editions.title,editions.language"
