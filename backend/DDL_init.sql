@@ -1,8 +1,10 @@
 -- Table: Book
+-- for now, cover - nullable
 CREATE TABLE Book (
     book_id SERIAL PRIMARY KEY ,
-    Title varchar(100)  NOT NULL,
-    Cover bytea  NOT NULL
+    Title varchar(100)  NOT NULL UNIQUE,
+    author_name varchar(100),
+    cover bytea
 );
 --
 -- Table: Language
@@ -76,7 +78,8 @@ ALTER TABLE Users ADD CONSTRAINT User_Native_ISO
 
 -- DROP TABLE IF EXISTS TranslateAction CASCADE;
 -- DROP TABLE IF EXISTS Word CASCADE;
--- DROP TABLE IF EXISTS Book CASCADE;
+DROP TABLE IF EXISTS Book CASCADE; -- delete
+TRUNCATE TABLE Book; -- clear
 -- DROP TABLE IF EXISTS Users CASCADE;
 -- DROP TABLE IF EXISTS Language CASCADE;
 -- DROP TABLE IF EXISTS Language CASCADE;

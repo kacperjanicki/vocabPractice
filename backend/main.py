@@ -8,6 +8,19 @@ from schemas.DBconnection import DBconnection
 import httpx
 import json
 import re
+from fastapi import status, HTTPException, Response
+"""
+status.HTTP_200_OK
+status.HTTP_201_CREATED
+status.HTTP_204_NO_CONTENT
+status.HTTP_400_BAD_REQUEST
+status.HTTP_401_UNAUTHORIZED
+status.HTTP_403_FORBIDDEN
+status.HTTP_404_NOT_FOUND
+status.HTTP_409_CONFLICT
+status.HTTP_422_UNPROCESSABLE_ENTITY
+status.HTTP_500_INTERNAL_SERVER_ERROR
+"""
 
 """ PORTS:
     - 5173 - FRONTEND
@@ -16,12 +29,8 @@ import re
     - 11434 - OLLAMA
 """
 
-# DATABASE_URL = os.getenv("DATABASE_URL")
-# DB_USER = os.getenv("POSTGRES_USER")
-# DB_PASSWORD = os.getenv("POSTGRES_PASSWORD")
-
 app = FastAPI()
-# db = create_engine(DATABASE_URL)
+# json.dumps(data, indent=2)
 
 app.add_middleware(
     CORSMiddleware,
@@ -122,19 +131,27 @@ async def read_word(
             detail=f"Translation error: {str(e)}")
 
 # Book--------------------------------------------------------------------------------------------------------
-@app.post("/book/newBook")
-async def add_book(
-    title: str
-    ):
+@app.post("/book/new")
+async def add_book(title: str, response_class=JSONResponse) -> JSONResponse:
+    if not title:
+        raise HTTPException(status_code=400, detail="Title is required")
 
-    b1 = Book(title=title)
+    bk = Book(title=title)
+    bk = DBconnection.insertBook(bk) # only now .insertBook can return None, so now we check if the operation was successfull
+    if bk:
+        print(bk.__repr__())
+        return JSONResponse(
+            status_code = 201, # 201 - created
+            content={"msg":f"{bk.__repr__()} created"}
+        )
+    else:
+        raise HTTPException(
+            status_code = status.HTTP_409_CONFLICT,
+            detail = "Book with that title already exists"
+        )
+    # await bk.fetchMetadata() # this will fetch fields like cover and author_title and assign it to the bk object
 
-    metadata = await b1.getMetadata()
-
-    json_formatted= json.dumps(b1.metadata, indent=2)
-    print(json_formatted)
-    return metadata
-
+    
 @app.get("/book/{bookId}/cover")
 async def get_cover(bookId:str):
     no_rules_cover_i = "10524294"
@@ -147,6 +164,7 @@ async def get_cover(bookId:str):
 
     #             print(response)
     #             return(response)
+
 # User--------------------------------------------------------------------------------------------------------
 # @app.get("/util/listOfISOcodes")
 @app.get("/user/")

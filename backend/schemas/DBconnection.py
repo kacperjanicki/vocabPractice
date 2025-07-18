@@ -1,5 +1,6 @@
 from sqlalchemy import text,Table,Column,Integer,String,MetaData,create_engine,insert,select
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 from fastapi.responses import JSONResponse
 import os
 
@@ -8,9 +9,25 @@ db = create_engine(DATABASE_URL)
 metadata = MetaData()
 
 from schemas.User import User
+from schemas.Book import Book
 
 class DBconnection:
+    # Book actions --------------------
+    @staticmethod
+    def insertBook(bk: Book) -> Book | None:
+        with Session(db) as session:
+            session.add(bk)
+            try:
+                session.commit()
+                session.refresh(bk) # to be able to use __repr__ in endpoint response
+                return bk
+            except IntegrityError as err:
+                session.rollback()
+                print("Integrity err:", err)
+                return None
+       
 
+    # User actions --------------------
     @staticmethod
     def insertUser(usr: User):
         with Session(db) as session:
