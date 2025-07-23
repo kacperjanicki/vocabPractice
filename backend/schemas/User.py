@@ -11,13 +11,13 @@ class User(Base):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    name: Mapped[str] = mapped_column(String(30), nullable=False)
+    username: Mapped[str] = mapped_column(String(30), nullable=False)
     native: Mapped[str] = mapped_column("native_iso_code",String(3), nullable=False)
     foreign: Mapped[str] = mapped_column("foreign_iso_code",String(3), nullable=False)
+    hashed_password: Mapped[str] = mapped_column(String(100),nullable=False)
 
     def __repr__(self):
         return f"Name: {self.name}, Native: {self.native}, Foreign: {self.foreign}"
-
 
     # async def getMetadata(self) -> JSONResponse:
     #     url = f"https://openlibrary.org/search.json?q={self.title}&fields=key,title,cover_i,author_name,editions,editions.key,editions.title,editions.language"

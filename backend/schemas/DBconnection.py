@@ -32,7 +32,12 @@ class DBconnection:
     def insertUser(usr: User):
         with Session(db) as session:
             session.add(usr)
-            session.commit()
+            try:
+                session.commit()
+                session.refresh(usr)
+                return usr
+            except IntegrityError:
+                session.rollback()
 
     @staticmethod
     def getUsers() -> list[dict]:
@@ -40,18 +45,7 @@ class DBconnection:
             users = session.query(User).all()
             return users
 
-
     @staticmethod
-    def getUser(name: str) -> dict:
+    def getUserByUsername(username: str) -> User | None:
         with Session(db) as session:
-            stmt = select(User).where(User.name == name)
-            result = session.execute(stmt).scalar_one_or_none()
-            if result:
-                return {
-                    "id": result.id,
-                    "name": result.name,
-                    "native": result.native,
-                    "foreign": result.foreign
-                }
-            else:
-                return {}
+            return session.query(User).filter(User.username==username).first()

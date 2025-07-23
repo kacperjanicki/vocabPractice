@@ -1,6 +1,9 @@
-from fastapi import FastAPI,HTTPException
+from urllib import request
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.security import OAuth2PasswordRequestForm
+
 from schemas.Book import Book
 from schemas.User import User
 from schemas.DBconnection import DBconnection
@@ -8,7 +11,9 @@ from schemas.DBconnection import DBconnection
 import httpx
 import json
 import re
-from fastapi import status, HTTPException, Response
+from fastapi import status, HTTPException, Response, Body
+from auth.security import hash_password, create_access_token, verify_password
+
 """
 status.HTTP_200_OK
 status.HTTP_201_CREATED
@@ -20,15 +25,13 @@ status.HTTP_404_NOT_FOUND
 status.HTTP_409_CONFLICT
 status.HTTP_422_UNPROCESSABLE_ENTITY
 status.HTTP_500_INTERNAL_SERVER_ERROR
-"""
 
-""" PORTS:
+PORTS:
     - 5173 - FRONTEND
     - 5174 - BACKEND
     - 5000 - LibreTranslate
     - 11434 - OLLAMA
 """
-
 app = FastAPI()
 # json.dumps(data, indent=2)
 
@@ -58,14 +61,11 @@ INIT_PROMPT = (
     "Example for pl->es:\n"
     "{\"translation\":\"gato\",\"meaning\":\"Ssak domowy\",\"type\":\"rzeczownik\",\"synonyms\":[\"kotek\",\"mruczek\"],\"examples\":[\"El gato ma\",\"Los gatos son\",\"Mi gato es\"]}"
 )
-
-
 """
         LibreTranslate - port 5000
         what can be achieved with `LibreTranslate`:
         use - https://github.com/LibreTranslate/LibreTranslate
 """
-
 # Word--------------------------------------------------------------------------------------------------------
 def extract_first_json(text):
     match = re.search(r'\{.*\}', text, re.DOTALL)
@@ -150,8 +150,6 @@ async def add_book(title: str, response_class=JSONResponse) -> JSONResponse:
             detail = "Book with that title already exists"
         )
     # await bk.fetchMetadata() # this will fetch fields like cover and author_title and assign it to the bk object
-
-    
 @app.get("/book/{bookId}/cover")
 async def get_cover(bookId:str):
     no_rules_cover_i = "10524294"
@@ -165,23 +163,63 @@ async def get_cover(bookId:str):
     #             print(response)
     #             return(response)
 
+# Auth--------------------------------------------------------------------------------------------------------
+@app.post("/auth/signup")
+def signup(
+    username: str = Body(...),
+    password: str = Body(...),
+    native: str = Body(...),
+    foreign: str = Body(...)
+) -> JSONResponse:
+
+    if DBconnection.getUserByUsername(username):
+        raise HTTPException(
+            status_code=400,
+            detail="Username already exists"
+        )
+
+    hashed_pass = hash_password(password)
+    user = User(username=username,native=native,foreign=foreign,hashed_password=hashed_pass)
+    DBconnection.insertUser(user)
+    # log in after successfull sign up
+    access_token = create_access_token(data={"sub": user.username})
+
+    return JSONResponse(
+        status_code=201,
+        content = {'msg':'User created successfully',
+                 'access_token':access_token,
+                 'token_type':'bearer'
+                 }
+    )
+@app.post("/auth/login")
+def login(form_data: OAuth2PasswordRequestForm = Depends()):
+
+    user = DBconnection.getUserByUsername(form_data.username)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password"
+        )
+
+    if not verify_password(form_data.password, user.hashed_password):
+        raise HTTPException(
+            status_code = status.HTTP_401_UNAUTHORIZED,
+            detail = "Incorrect username or password"
+        )
+
+    access_token = create_access_token(data={"sub": user.username})
+
+    return {
+        "access_token": access_token,
+        "token_type": "bearer"
+    }
+
 # User--------------------------------------------------------------------------------------------------------
 # @app.get("/util/listOfISOcodes")
 @app.get("/user/")
 def get_users():
     return DBconnection.getUsers()
 
-@app.get("/user/{userName}")
-def get_specific_user(userName: str):
-    return DBconnection.getUser(userName)
-    
-# user moze dac name 'new' : handle
-@app.post("/user/new")
-def add_user(
-        name:str,
-        native:str,
-        foreign:str
-    ):
-
-    DBconnection.insertUser(User(name=name,native=native,foreign=foreign))
-    return {"status":"ok"}
+@app.get("/user/{username}")
+def get_specific_user(username: str):
+    return DBconnection.getUserByUsername(username)

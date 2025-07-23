@@ -23,15 +23,27 @@ CREATE TABLE TranslateAction (
 -- Table: Users
 CREATE TABLE Users (
     id SERIAL PRIMARY KEY,
-    Name varchar(30) NOT NULL,
+    username varchar(30) NOT NULL UNIQUE,
+    hashed_password varchar(100)  NOT NULL,
     NATIVE_ISO_CODE varchar(2) NOT NULL,
     FOREIGN_ISO_CODE varchar(2) NOT NULL
 );
-
+-- Table: User's Books
+CREATE TABLE UserBooks (
+       User_id int  NOT NULL,
+       book_id int  NOT NULL,
+       CONSTRAINT UserBooks_pk PRIMARY KEY (User_id,book_id)
+);
+-- Table: UserTranslateActions
+CREATE TABLE UserTranslateActions (
+      User_id int  NOT NULL,
+      action_id int  NOT NULL,
+      CONSTRAINT UserTranslateActions_pk PRIMARY KEY (User_id,action_id)
+);
 -- Table: Word
 CREATE TABLE Word (
     word_id SERIAL PRIMARY KEY,
-    data json  NOT NULL,
+    data json  NOT NULL, -- MAKE IT NOT JSON IN THE FUTURE
     request_date date  NOT NULL
 );
 
@@ -76,10 +88,42 @@ ALTER TABLE Users ADD CONSTRAINT User_Native_ISO
     INITIALLY IMMEDIATE
 ;
 
+-- Reference: UserBooks_Book (table: User's Books)
+ALTER TABLE UserBooks ADD CONSTRAINT UserBooks_Book
+    FOREIGN KEY (book_id)
+        REFERENCES Book (book_id)
+        NOT DEFERRABLE
+        INITIALLY IMMEDIATE
+;
+-- `Reference: User's Books_User (table: User's Books)
+ALTER TABLE UserBooks ADD CONSTRAINT UserBooks_User
+    FOREIGN KEY (User_id)
+        REFERENCES Users (id)
+        NOT DEFERRABLE
+        INITIALLY IMMEDIATE
+;
+
+-- Reference: User's TranslateActions_TranslateAction (table: User's TranslateActions)
+ALTER TABLE UserTranslateActions ADD CONSTRAINT UserTranslateActions_TranslateAction
+    FOREIGN KEY (action_id)
+        REFERENCES TranslateAction (action_id)
+        NOT DEFERRABLE
+        INITIALLY IMMEDIATE
+;
+
+-- Reference: User's TranslateActions_User (table: User's TranslateActions)
+ALTER TABLE UserTranslateActions ADD CONSTRAINT UserTranslateActions_User
+    FOREIGN KEY (User_id)
+        REFERENCES Users (id)
+        NOT DEFERRABLE
+            INITIALLY IMMEDIATE
+;
+
 -- DROP TABLE IF EXISTS TranslateAction CASCADE;
 -- DROP TABLE IF EXISTS Word CASCADE;
-DROP TABLE IF EXISTS Book CASCADE; -- delete
-TRUNCATE TABLE Book; -- clear
+DROP TABLE IF EXISTS Users CASCADE; -- delete
+TRUNCATE TABLE Users CASCADE; -- clear
+TRUNCATE TABLE UserBooks; -- clear
 -- DROP TABLE IF EXISTS Users CASCADE;
 -- DROP TABLE IF EXISTS Language CASCADE;
 -- DROP TABLE IF EXISTS Language CASCADE;
