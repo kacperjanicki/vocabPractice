@@ -61,6 +61,7 @@ INIT_PROMPT = (
     "Example for pl->es:\n"
     "{\"translation\":\"gato\",\"meaning\":\"Ssak domowy\",\"type\":\"rzeczownik\",\"synonyms\":[\"kotek\",\"mruczek\"],\"examples\":[\"El gato ma\",\"Los gatos son\",\"Mi gato es\"]}"
 )
+
 """
         LibreTranslate - port 5000
         what can be achieved with `LibreTranslate`:
@@ -95,7 +96,6 @@ async def read_word(
     f"{INIT_PROMPT}\n"
     f"{{'word': '{word}', 'native': '{native}', 'foreign': '{foreign}'}}")
     # print(final_prompt)
-
 
 
     try:
@@ -179,8 +179,10 @@ def signup(
         )
 
     hashed_pass = hash_password(password)
+
     user = User(username=username,native=native,foreign=foreign,hashed_password=hashed_pass)
     DBconnection.insertUser(user)
+
     # log in after successfull sign up
     access_token = create_access_token(data={"sub": user.username})
 
@@ -206,7 +208,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
             status_code = status.HTTP_401_UNAUTHORIZED,
             detail = "Incorrect username or password"
         )
-
+    
     access_token = create_access_token(data={"sub": user.username})
 
     return {
@@ -223,3 +225,7 @@ def get_users():
 @app.get("/user/{username}")
 def get_specific_user(username: str):
     return DBconnection.getUserByUsername(username)
+
+@app.get("/db-test")
+def db_test():
+    return DBconnection.test()

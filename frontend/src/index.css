@@ -9,50 +9,39 @@ body {
   padding: 0;
   font-family: 'Inter', 'Jetbrains Mono', Helvetica, Arial, sans-serif;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #1a1a1a;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .main-content {
-  /* Give 10vh (10% of viewport height) margin top and bottom */
   margin: 10vh auto;
-  /* vertical margin 10vh; horizontal auto centers */
-
-  max-width: 900px;
-  width: 80vw;
+  max-width: 1000px;
+  width: 85vw;
   min-width: 320px;
-
-  /* Set height so content + margins fill viewport height */
   height: calc(100vh - 20vh);
-  /* 100vh - top margin(10vh) - bottom margin(10vh) */
-
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 1.2rem;
-
-  background: #2c2c2c;
+  gap: 2rem;
+  background: #242424;
   border-radius: 16px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-  padding: 3rem 2rem 2rem;
+  box-shadow: 0 4px 20px rgba(31, 136, 217, 0.15);
+  padding: 2.5rem 3rem;
   box-sizing: border-box;
+  overflow-y: auto;
 }
 
 .header-bar {
   width: 100vw;
-  /* Make navbar full width */
   position: fixed;
   top: 0;
   left: 0;
   height: 90px;
-  /* Match icon size + spacing */
-  background-color: #1e1e1e;
+  background: linear-gradient(135deg, #1e1e1e 0%, #252525 100%);
   padding: 0 2rem;
-  /* Left/Right only, no extra top/bottom */
   z-index: 1000;
-  border-bottom: 1px solid #333;
+  border-bottom: 2px solid #1f88d9;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -63,7 +52,6 @@ body {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  /* Less gap for compactness */
   height: 100%;
 }
 
@@ -73,72 +61,119 @@ body {
   color: #fff;
   line-height: 1;
   margin-left: 0.5rem;
-  /* Subtle separation from icon */
 }
-
 
 .header-item.clickable {
   position: relative;
   cursor: pointer;
-  /* Remove strong box-shadow to keep icons visible */
-  transition: background 0.3s;
+  transition: all 0.3s ease;
 }
 
 .header-item.clickable:hover .header-label,
 .header-item.clickable:hover svg {
-  color: #63B0CD;
-  filter: brightness(1.2);
-  /* slightly brighter */
+  color: #1f88d9;
+  filter: brightness(1.3);
   transition: color 0.2s, filter 0.2s;
 }
 
-
-
-
-.description {
-  margin-top: 0;
-  /* usuń górny margines */
-  margin-bottom: 1.5rem;
-  width: 100%;
-  max-width: 700px;
-}
-
-
-
-.langSelect {
+/* Nowy layout - wszystko w jednej sekcji */
+.page-container {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  padding: 1rem 0;
-  background-color: #2c2c2c;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  max-width: 400px;
-  margin: 0 auto;
+  gap: 2rem;
+  width: 100%;
+}
+
+.description {
+  margin: 0;
+  padding: 1.5rem;
+  background: #2a2a2a;
+  border-radius: 12px;
+  border-left: 4px solid #1f88d9;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.description p {
+  margin: 0.8rem 0;
+  line-height: 1.6;
+  color: #d4d4d8;
+}
+
+.description a {
+  color: #1f88d9;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.description a:hover {
+  color: #3da3f5;
+}
+
+/* Language selector w jednej linii z inputem */
+.input-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 2rem;
+  background: #2a2a2a;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(31, 136, 217, 0.1);
 }
 
 .langSelectContainer {
   display: flex;
-  gap: 1rem;
-  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
-.langSelectContainer select {
-  min-width: 180px;
-  padding: 0.5rem;
-  border-radius: 6px;
-  border: 1px solid #444;
-  background-color: #3a3a3a;
-  color: rgba(255, 255, 255, 0.87);
+.langSelectItem {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem; 
+}
+
+.langSelectItem label {
+  font-weight: 500;
+  color: #1f88d9;
+  min-width: 140px;
+  text-align: right; 
+}
+
+
+.language-select {
+  background-color: #1e1e1e;
+  color: #f4f4f5;
+  border: 1px solid #3f3f46;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  font-family: 'JetBrains Mono', 'Inter', monospace;
   font-size: 1rem;
-  transition: border-color 0.3s ease;
+  min-width: 180px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  outline: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
 
-.langSelectContainer select:focus {
-  outline: none;
-  border-color: #63B0CD;
-  box-shadow: 0 0 5px #63B0CD;
+.language-select:hover {
+  border-color: #52525b;
+  background-color: #252525;
 }
+
+.language-select:focus {
+  border-color: #71717a;
+  box-shadow: 0 0 0 2px rgba(113, 113, 122, 0.2);
+  background-color: #252525;
+}
+
+.language-select option {
+  background: #1e1e1e;
+  color: #f4f4f5;
+}
+
 
 .vocabEntry {
   display: flex;
@@ -152,71 +187,28 @@ body {
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
   gap: 1rem;
   width: 100%;
-  max-width: 420px;
 }
 
 .wordInput {
   width: 100%;
-  max-width: 400px;
-  height: 25px;
-  padding: 0 1rem;
-  border-radius: 1rem;
-  background-color: #27272a;
+  max-width: 450px;
+  height: 45px;
+  padding: 0 1.5rem;
+  border-radius: 12px;
+  background-color: #1e1e1e;
   color: #f4f4f5;
-  border: 1px solid #3f3f46;
+  border: 2px solid #1f88d9;
   font-family: 'JetBrains Mono', 'Inter', monospace;
-  font-size: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+  font-size: 1.1rem;
+  box-shadow: 0 2px 12px rgba(31, 136, 217, 0.15);
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  line-height: 25px;
+  transition: all 0.3s ease;
+  line-height: 45px;
   box-sizing: border-box;
 }
-
-.btnIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  background: transparent;
-  transition: background 0.2s;
-  cursor: pointer;
-}
-
-.btnIcon svg {
-  color: #fff;
-  transition: color 0.2s;
-}
-
-.btnIcon:hover {
-  background: #63B0CD;
-}
-
-.btnIcon:hover svg {
-  color: #fff;
-}
-
-
-.wordInput {
-  width: 100%;
-  max-width: 400px;
-  height: 25px;
-  padding: 0 1rem;
-  border-radius: 1rem;
-  background-color: #27272a;
-  color: #f4f4f5;
-  border: 1px solid #3f3f46;
-  font-family: 'JetBrains Mono', 'Inter', monospace;
-  font-size: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  line-height: 25px;
-  box-sizing: border-box;
-}
-
 
 .wordInput::placeholder {
   color: #71717a;
@@ -224,78 +216,125 @@ body {
 }
 
 .wordInput:focus {
-  border-color: #63B0CD;
-  box-shadow: 0 0 0 2px #63B0CD33;
+  border-color: #3da3f5;
+  box-shadow: 0 0 0 3px rgba(31, 136, 217, 0.3);
+  background-color: #252525;
 }
-
 
 .btnIcon {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* biała ramka */
-  border-radius: 8px;
-  /* lekko zaokrąglone rogi */
-  background: transparent;
-  /* domyślnie przezroczyste */
-  transition: background 0.2s;
+  width: 45px;
+  height: 45px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #1f88d9 0%, #1566b0 100%);
+  border: none;
+  transition: all 0.3s ease;
   cursor: pointer;
+  box-shadow: 0 4px 12px rgba(31, 136, 217, 0.3);
 }
 
 .btnIcon svg {
   color: #fff;
-  /* biały plus */
-  transition: color 0.2s;
+  transition: transform 0.2s;
 }
 
 .btnIcon:hover {
-  background: #63B0CD;
-  /* niebieskie wnętrze */
+  background: linear-gradient(135deg, #3da3f5 0%, #1f88d9 100%);
+  box-shadow: 0 6px 20px rgba(31, 136, 217, 0.5);
+  transform: translateY(-2px);
 }
 
 .btnIcon:hover svg {
-  color: #fff;
-  /* plus pozostaje biały */
+  transform: scale(1.1);
 }
 
-.vocabEntry {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
-  width: 100%;
+.btnIcon:active {
+  transform: translateY(0);
 }
 
 .vocabResultBox {
   margin-top: 1.5rem;
-  background: #232324;
+  background: linear-gradient(135deg, #2a2a2a 0%, #252525 100%);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.13);
-  padding: 1.5rem 2rem;
+  border: 1px solid #1f88d9;
+  box-shadow: 0 4px 16px rgba(31, 136, 217, 0.2);
+  padding: 2rem 2.5rem;
   width: 100%;
-  max-width: 50%;
+  max-width: 700px;
   color: #f4f4f5;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.2rem;
 }
 
 .vocabResultRow {
   display: flex;
-  gap: 0.5rem;
+  gap: 1rem;
   align-items: flex-start;
 }
 
 .vocabLabel {
-  min-width: 110px;
-  color: #63B0CD;
-  font-weight: 500;
+  min-width: 120px;
+  color: #1f88d9;
+  font-weight: 600;
+  font-size: 1.05rem;
 }
 
-/* HTML: <div class="loader"></div> */
+.vocabValue {
+  flex: 1;
+  line-height: 1.6;
+}
+
+.vocabExamples {
+  margin: 0;
+  padding-left: 1.5em;
+  color: #d4d4d8;
+}
+
+.vocabExamples li {
+  list-style-type: disc;
+  margin-left: 18px;
+  margin-bottom: 18px;
+  color: #e4e4e7;
+}
+
+.vocabExamples li::marker {
+  color: #1f88d9;
+}
+
+.loading-blur {
+  color: transparent;
+  background: linear-gradient(90deg, #333 25%, #1f88d9 50%, #333 75%);
+  background-size: 200% 100%;
+  border-radius: 4px;
+  animation: shimmer 2.4s infinite linear;
+  position: relative;
+  filter: blur(0.5px);
+  pointer-events: none;
+  user-select: none;
+}
+
+.loading-blur::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(31, 136, 217, 0.2) 50%, transparent 100%);
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
 .loader {
   --s: 20px;
-
   --_d: calc(0.353*var(--s));
   width: calc(var(--s) + var(--_d));
   aspect-ratio: 1;
@@ -307,9 +346,8 @@ body {
   content: "";
   grid-area: 1/1;
   clip-path: polygon(var(--_d) 0, 100% 0, 100% calc(100% - var(--_d)), calc(100% - var(--_d)) 100%, 0 100%, 0 var(--_d));
-  background:
-    conic-gradient(from -90deg at calc(100% - var(--_d)) var(--_d),
-      #fff 135deg, #666 0 270deg, #aaa 0);
+  background: conic-gradient(from -90deg at calc(100% - var(--_d)) var(--_d),
+      #1f88d9 135deg, #0d4469 0 270deg, #3da3f5 0);
   animation: l6 2s infinite;
 }
 
@@ -318,113 +356,30 @@ body {
 }
 
 @keyframes l6 {
-  0% {
-    transform: translate(0, 0)
+  0% { transform: translate(0, 0) }
+  25% { transform: translate(30px, 0) }
+  50% { transform: translate(30px, 30px) }
+  75% { transform: translate(0, 30px) }
+  100% { transform: translate(0, 0) }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .langSelectContainer {
+    flex-direction: column;
+    gap: 1rem;
   }
-
-  25% {
-    transform: translate(30px, 0)
+  
+  .langSelectItem {
+    width: 100%;
+    justify-content: space-between;
   }
-
-  50% {
-    transform: translate(30px, 30px)
+  
+  .vocabInputRow {
+    flex-direction: column;
   }
-
-  75% {
-    transform: translate(0, 30px)
+  
+  .wordInput {
+    max-width: 100%;
   }
-
-  100% {
-    transform: translate(0, 0)
-  }
-}
-
-.vocabValue {
-  flex: 1;
-}
-
-.vocabExamples {
-  margin: 0;
-  padding-left: 1.2em;
-  color: #dad0c2;
-}
-
-.vocabExamples li {
-  list-style-type: disc;
-  margin-left: 18px;
-  margin-bottom: 18px;
-  /* większy odstęp między li */
-}
-
-.vocabExamples li .loading-blur {
-  min-height: 1.5em;
-  display: inline-block;
-}
-
-
-.loading-blur {
-  color: transparent;
-  background: linear-gradient(90deg, #444 25%, #888 50%, #444 75%);
-  background-size: 200% 100%;
-  border-radius: 4px;
-  animation: shimmer 2.4s infinite linear;
-  position: relative;
-  filter: blur(0.5px);
-  pointer-events: none;
-  user-select: none;
-}
-
-
-.loading-blur::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.12) 50%, transparent 100%);
-  pointer-events: none;
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: 200% 0;
-  }
-
-  100% {
-    background-position: -200% 0;
-  }
-}
-
-/* Kropki w bulletach zawsze widoczne */
-.vocabExamples li {
-  list-style-type: disc;
-  margin-left: 18px;
-}
-
-.language-select {
-  background-color: #27272a;
-  color: #f4f4f5;
-  border: 1px solid #3f3f46;
-  border-radius: 8px;
-  padding: 0.5rem 1rem;
-  font-family: 'JetBrains Mono', 'Inter', monospace;
-  font-size: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  margin-left: 8px;
-}
-
-.language-select:focus {
-  border-color: #63B0CD;
-  box-shadow: 0 0 0 2px #63B0CD33;
-}
-
-.language-select option {
-  background: #232324;
-  color: #f4f4f5;
-}
-
-.option-placeholder {
-  color: #63B0CD;
-  font-style: italic;
-  background: #232324;
 }

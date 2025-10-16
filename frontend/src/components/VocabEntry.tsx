@@ -42,30 +42,6 @@ const VocabEntry = ({ nativeLanguage, foreignLanguage }: VocabEntryProps) => {
             "\nforeign: " + foreignLanguage?.code
         );
 
-
-
-        /*
-            libretranslate is responsible for fetching simple translation and phonetics,
-            so we can serve it to the user while ai is generating the full response
-
-            i decided  to use both libretranslate and ai, because there's no public api
-            that meets my requirements for this project
-        */
-
-        // const res = await fetch("http://localhost:5000/translate", {
-        //     method: "POST",
-        //     body: JSON.stringify({
-        //         q: word,
-        //         source: "en",
-        //         target: "pl",
-        //         format: "text",
-        //         alternatives: 3,
-        //         api_key: ""
-        //     }),
-        //     headers: { "Content-Type": "application/json" }
-        // });
-        // console.log(await res.json());
-
         fetch(
             "http://localhost:5174/word/" + word
             + "?native=" + nativeLanguage?.code + "&foreign=" + foreignLanguage?.code
@@ -81,12 +57,10 @@ const VocabEntry = ({ nativeLanguage, foreignLanguage }: VocabEntryProps) => {
                 setLoading(true)
             });
 
-
         // fetch("http://localhost:5174/word/" + word + "?native=pl?foreign=es")
         //     .then((response) => response.json())
         //     .then((data) => console.log(data.message))
         //     .catch((err) => console.error(err));
-
     }
 
 

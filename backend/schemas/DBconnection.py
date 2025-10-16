@@ -46,6 +46,15 @@ class DBconnection:
             return users
 
     @staticmethod
+    def test():
+        try:
+            with Session(db) as session:
+                session.execute(text("SELECT * from users"))
+            return {"status": "connected"}
+        except Exception as e:
+            return {"status": "error", "detail": str(e)}
+
+    @staticmethod
     def getUserByUsername(username: str) -> User | None:
         with Session(db) as session:
             return session.query(User).filter(User.username==username).first()

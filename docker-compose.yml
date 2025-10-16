@@ -9,6 +9,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
   backend:
     build: ./backend
     environment:
@@ -22,34 +23,35 @@ services:
       - ./backend:/app
     depends_on:
       - db
-  libretranslate:
-    image: libretranslate/libretranslate:latest
-    container_name: libretranslate
-    ports:
-      - "5000:5000"
-    volumes:
-      - libretranslate_models:/home/libretranslate/.local
+      - ollama
+
   ollama:
-    image: ollama/ollama
+    build: ./ollama
     ports:
       - "11434:11434"
     volumes:
       - ollama_data:/root/.ollama
       - ollama-models:/root/.ollama/models
+    environment:
+      - HF_TOKEN=${HF_TOKEN}
+    deploy:
+      resources:
+        limits:
+          memory: 28G
+        reservations:
+          memory: 20G
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
   frontend:
     build: ./frontend
     ports:
       - "5173:5173"
     volumes:
       - ./frontend:/app
-    environment:
-      - CHOKIDAR_USEPOLLING=true
-    depends_on:
-      - backend
 
 volumes:
   postgres_data:
   ollama_data:
   ollama-models:
-  libretranslate_models:
-

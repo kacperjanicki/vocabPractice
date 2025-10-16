@@ -27,9 +27,10 @@ const App: React.FC = () => {
           <span className="header-label">VocabPractice</span>
         </div>
 
+
         <div className="header-item clickable" onClick={changeLocation("/me")}>
           <RiAccountCircleFill size={56} />
-          <span className="header-label">Account</span>
+          <span className="header-label">My words</span>
         </div>
 
       </div>
