@@ -1,11 +1,9 @@
 import google.generativeai as genai
 import os
-from dotenv import load_dotenv
-load_dotenv()
 
 def initialize_model():
-    api_key = os.environ.get("GOOGLE_API_KEY")
-    
+    api_key = os.getenv("GOOGLE_API_KEY")
+    print(api_key)    
     if not api_key:
         raise ValueError("API key not found")
     
@@ -16,7 +14,7 @@ def initialize_model():
 
 
 if __name__ == '__main__':
-    print("Testing ")
+    # print("Testing ")
     try:
         model_testowy = initialize_model()
         response = model_testowy.generate_content("Powiedz 'cześć' po angielsku.")

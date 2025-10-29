@@ -1,0 +1,15 @@
+{
+    "name": "VocabPractice Dev",
+    "dockerComposeFile": "../docker-compose.yml",
+    "service": "ollama",
+    "workspaceFolder": "/app",
+    "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "charliermarsh.ruff",
+        "esbenp.prettier-vscode"
+    ],
+    "settings": {
+        "python.defaultInterpreterPath": "/usr/bin/python3"
+    }
+}
